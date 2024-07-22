@@ -1,4 +1,4 @@
-var $ = {
+var ezFront = {
     sel : function (selector) {
         document.getElementById(selector);
     },
@@ -70,5 +70,40 @@ var $ = {
         };
 
         xhr.send(JSON.stringify(body));
+    },
+    notification: function(message, duration = 3000) {
+        // Create container if it doesn't exist
+        let container = document.querySelector('.notification-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.className = 'notification-container';
+            document.body.appendChild(container);
+        }
+
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = 'notification';
+        notification.innerHTML = `
+            <span class="message">${message}</span>
+            <span class="close">&times;</span>
+        `;
+
+        container.appendChild(notification);
+
+        // Add close button event listener
+        const closeBtn = notification.querySelector('.close');
+        closeBtn.addEventListener('click', () => {
+            container.removeChild(notification);
+        });
+
+        // Set timeout for automatic removal
+        setTimeout(() => {
+            notification.classList.add('hide');
+            setTimeout(() => {
+                if (container.contains(notification)) {
+                    container.removeChild(notification);
+                }
+            }, 500); // Match the CSS transition duration
+        }, duration);
     }
 };
